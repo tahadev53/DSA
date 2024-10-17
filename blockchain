@@ -1,0 +1,48 @@
+ npm init -y
+npm install web3
+// Load Web3 library
+const Web3 = require('web3');
+
+// Replace with your Infura project ID (for mainnet or testnet connection)
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'); // or testnet like Ropsten
+
+// Replace with sender and receiver Ethereum addresses
+const senderAddress = '0xSenderAddress';  // Sender's address (from which you send Ether)
+const receiverAddress = '0xReceiverAddress';  // Receiver's address (who receives Ether)
+
+// Replace with the private key of the sender (IMPORTANT: Secure it properly; never expose it in production code)
+const privateKey = '0xSenderPrivateKey';  // Private key of the sender's account
+
+// Define the amount of Ether to transfer (in Wei)
+const transferAmount = web3.utils.toWei('0.01', 'ether');  // 0.01 Ether in Wei
+
+// Function to transfer Ether
+async function transferEther() {
+    try {
+        // Get the current nonce for the sender's account (used to keep transaction count in order)
+        const nonce = await web3.eth.getTransactionCount(senderAddress, 'latest');
+
+        // Create the transaction object
+        const tx = {
+            from: senderAddress,
+            to: receiverAddress,
+            value: transferAmount,  // Amount to transfer (in Wei)
+            gas: 2000000,  // Gas limit for the transaction
+            nonce: nonce,  // Transaction nonce
+        };
+
+        // Sign the transaction with the sender's private key
+        const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+
+        // Send the signed transaction
+        const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+        // Log transaction hash upon successful transfer
+        console.log('Transaction successful with hash:', receipt.transactionHash);
+    } catch (error) {
+        console.error('Transaction failed:', error);
+    }
+}
+
+// Call the function to execute the transaction
+transferEther();
