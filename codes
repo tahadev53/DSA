@@ -1,0 +1,225 @@
+DSA A & B
+
+#include <stdio.h>
+#include <stdlib.h>
+#define SIZE 40
+int n;
+
+struct node {
+  int vertex;
+  struct node* next;
+};
+
+struct node* createNode(int);
+
+struct Graph 
+{
+  int numVertices;
+  struct node** adjLists;
+  int* visited;
+};
+
+
+// Creating a node
+struct node* createNode(int v) {
+  struct node* newNode = (node*) malloc(sizeof(struct node));
+  newNode->vertex = v;
+  newNode->next = NULL;
+  return newNode;
+}
+
+// Creating a graph
+struct Graph* createGraph(int vertices) {
+  struct Graph* graph = (Graph*) malloc(sizeof(struct Graph));
+  graph->numVertices = vertices;
+
+  graph->adjLists = (Graph*) malloc(vertices * sizeof(struct Graph*));
+  graph->visited = (Graph*) malloc(vertices * sizeof(int));
+
+  int i;
+  for (i = 0; i < vertices; i++) 
+  {
+    graph->adjLists[i] = NULL;
+    graph->visited[i] = 0;
+  }
+
+  return graph;
+}
+void addEdge(struct Graph* graph) 
+{
+  int i,max_edges,u,v;
+  max_edges=n*(n-1)/2;
+  for(i=1;i<=max_edges;i++)
+  {
+    printf("Enter edge [%d] (-1 -1 to quit): ",i);
+    scanf("%d%d",&u,&v);
+    if((u==-1)&&(v==-1))
+    {
+      break;
+    }
+    else if(u>=n || v>=n || u<0 || v<0)
+    {
+      printf("Invalid vertex\n");
+      i--;
+    }
+    else
+    {
+      // Add edge from s to d
+      struct node* newNode = createNode(v);
+      newNode->next = graph->adjLists[u];
+      graph->adjLists[u] = newNode;
+
+      // Add edge from d to s
+      newNode = createNode(u);
+      newNode->next = graph->adjLists[v];
+      graph->adjLists[v] = newNode;
+    }
+  }
+}
+
+
+
+void DFS(struct Graph* graph, int vertex) 
+{
+  struct node* adjList = graph->adjLists[vertex];
+  struct node* temp = adjList;
+
+  
+
+  graph->visited[vertex] = 1;
+  printf("Visited %d \n", vertex);
+
+  while (temp != NULL) {
+    int connectedVertex = temp->vertex;
+
+    if (graph->visited[connectedVertex] == 0) 
+    {
+      DFS(graph, connectedVertex);
+    }
+    temp = temp->next;
+  }
+}
+// Print the graph
+void printGraph(struct Graph* graph) {
+  int v;
+  for (v = 0; v < graph->numVertices; v++) {
+    struct node* temp = graph->adjLists[v];
+    printf("\n Adjacency list of vertex %d\n ", v);
+    while (temp)
+    {
+      printf("%d -> ", temp->vertex);
+      temp = temp->next;
+    }
+    printf("\n");
+  }
+}
+
+int main()
+{
+  printf("Enter number of vertices :\n");
+  scanf("%d",&n);
+  struct Graph* graph = createGraph(n);
+  addEdge(graph);
+  
+  printGraph(graph);
+
+  DFS(graph, 0);
+  return 0;
+}
+
+
+B)
+
+
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+    int data;
+    struct node * next;
+};
+struct node* head=NULL;
+
+struct node *cn()
+{
+    struct node* n;
+    n=(struct node *)malloc(sizeof(struct node));
+    return(n);
+}
+
+void createnode()   //Function to create Linked list.
+{
+    int i,n,x;
+    struct node * temp,*newnode;
+    printf("Enter size of linked list :\n");
+    scanf("%d",&n);
+    printf("Enter elements of linked list :\n");
+    for(i=1;i<=n;i++)
+    {
+        scanf("%d",&x);
+        if(head==NULL)  //checking in linked list is empty
+        {
+            head=cn();
+            head->data=x;
+            head->next=NULL;
+            temp=head;
+        }
+        else
+        { 
+            newnode=cn();
+            newnode->data=x;
+            newnode->next=NULL;
+            temp->next=newnode;
+            temp=newnode;
+        }
+    }
+}
+
+
+void traverse()     //Function to traverse Linked list.
+{
+    struct node * temp;
+    temp=head;
+    while(temp!=NULL)
+    {
+        printf("%d\n",temp->data);
+        temp=temp->next;
+    }
+}
+
+
+
+
+
+
+void main()
+{
+    int choice,a=0;
+    while(choice!=3)
+    {
+        printf("\n\n1. Create Linked list.\n");
+        printf("2. Display Linked list.\n");
+        printf("3. Exit\n\n");
+        scanf("%d",&choice);
+        printf("\n");
+        switch(choice)
+        {
+            case 1: if(a==1)
+                    {
+                        printf("You have already created a Linked list.");
+                    }
+                    else
+                    {   createnode();
+                        a++;
+                    }
+                    break;
+
+            case 2: traverse();
+                    break;
+
+            case 3: exit(0);
+
+            defalut: printf("Enter a valid choice\n");
+        }
+    }
+}
